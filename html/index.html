@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <style type="text/css">
+            #mainChart {
+                position: relative;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <div>対象期間：</div>
+            <div id="startYearMonthSelection" class="year-month-selection">
+                <input type="text" value="" class="year-month-selection__selected-value" readonly/>
+            </div>
+            <div>-</div>
+            <div id="endYearMonthSelection" class="year-month-selection">
+                <input type="text" value="" class="year-month-selection__selected-value" readonly/>
+            </div>
+        </div>
+
+        <div id="mainChartItemSelectionArea">
+            <div id="mainChartItemSelection">
+            </div>
+        </div>
+
+        <div id="mainChart">
+        </div>
+        <script src="./js/main.js"></script>
+    </body>
+</html>
