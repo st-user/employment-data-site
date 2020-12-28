@@ -17,5 +17,5 @@ module.exports = merge(common, {
         { from: "./html/index_test.html", to: "./" }
       ],
     }),
-  ],
+  ]
 });

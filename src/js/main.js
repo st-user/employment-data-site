@@ -1,3 +1,5 @@
+/*! For license information please see https://tools.ajizablg.com/employment-data-site/oss-licenses.json */
+
 import { CustomEventContextNames } from './common/CustomEventNames.js';
 import BasicTabulationView from './basic-tabulation/BasicTabulationView.js';
 import ChartDataModel from './basic-tabulation/ChartDataModel.js';

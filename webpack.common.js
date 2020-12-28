@@ -56,20 +56,5 @@ module.exports = {
         { from: './data/basic-tabulation-0.csv', to: `./${SITE_ROOT}/data` },
       ],
     })
-  ],
-  /*
-  optimization: {
-      minimize: true,
-      minimizer: [new TerserPlugin({
-          extractComments: {
-              condition: /^\**!|@preserve|@license|@cc_on/i,
-              filename: (fileData) => {
-                  return `${fileData.filename}.LICENSE.txt${fileData.query}`;
-              },
-              banner: (licenseFile) => {
-                  return `For license information please see https://tools.ajizablg.com/${SITE_ROOT}/oss-licenses.json`;
-              }
-          }
-      })]
-  },*/
+  ]
 };
