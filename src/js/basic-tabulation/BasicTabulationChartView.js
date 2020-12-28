@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 
 const MARGIN = {
-    top: 20, right: 30, bottom: 30, left: 40
+    top: 30, right: 30, bottom: 30, left: 40
 };
 
 const CLASS_REMOVE_BEFORE_RENDER = 'basic-tabulation-chart__remove-bofore-render';
@@ -21,7 +21,7 @@ const toolTimeTemplate = data => {
     }
 
     return `
-        <div style="position: absolute; display: none" id="mainChartTooltip">
+        <div style="display: none" id="mainChartTooltip" class="chart__contents-tooltip">
             <div id="mainChartTooltipYearMonth">${data.year}年${data.month}月</div>
             <table><tbody>${lines}</tbody></table>
         </div>
@@ -37,13 +37,13 @@ export default class BasicTabulationChartView {
 
     #$mainChart;
     #chartSvg;
-    #nearestDataIndexSearcher;
+    #nearestDataIndexSearcherLeft;
 
-    /* Chart全体を描画する時にクリアが必要なフィールド　*/
+    /*Chart全体を描画する時にクリアが必要なフィールド*/
     #chartX;
     #yearMonths;
 
-    /* 表示する項目を変更する時にクリアが必要なフィールド　*/
+    /*表示する項目を変更する時にクリアが必要なフィールド*/
     #currentItemsData;
     #$tooltip;
 
@@ -56,7 +56,7 @@ export default class BasicTabulationChartView {
 
         this.#$mainChart = document.querySelector('#mainChart');
         this.#chartSvg = d3.select('#mainChart').append('svg');
-        this.#nearestDataIndexSearcher = d3.bisector(x => x).left;
+        this.#nearestDataIndexSearcherLeft = d3.bisector(x => x).left;
 
         this.#clearSelectedItemsInfo();
     }
@@ -70,23 +70,22 @@ export default class BasicTabulationChartView {
         const width  = this.#chartSizeModel.width();
         const height = this.#chartSizeModel.height();
         const svg = this.#chartSvg
-                .attr('width', width)
-                .attr('height', height);
+            .attr('width', width)
+            .attr('height', height);
 
         svg.selectAll(`.${CLASS_REMOVE_BEFORE_RENDER}`).remove();
 
-        const tickCount = Math.min(yearMonths.length, Math.floor(width / 80));
+        const tickCount = Math.min(yearMonths.length - 1, Math.floor(width / 80));
         svg.append('g')
-                .attr('class', CLASS_REMOVE_BEFORE_RENDER)
-                .attr('transform', `translate(0, ${height - MARGIN.bottom})`)
-                .call(
-                        d3.axisBottom(this.#chartX)
-                            .ticks(tickCount)
-                            .tickFormat(d => {
-                                console.log(d);
-                                return `${yearMonths[d].year}/${yearMonths[d].month}`;
-                            })
-                     );
+            .attr('class', CLASS_REMOVE_BEFORE_RENDER)
+            .attr('transform', `translate(0, ${height - MARGIN.bottom})`)
+            .call(
+                d3.axisBottom(this.#chartX)
+                    .ticks(tickCount)
+                    .tickFormat(d => {
+                        return `${yearMonths[d].year}/${yearMonths[d].month}`;
+                    })
+            );
     }
 
 
@@ -116,7 +115,7 @@ export default class BasicTabulationChartView {
             return {
                 min: reduce((a, b) => Math.min(a, b)),
                 max: reduce((a, b) => Math.max(a, b))
-            }
+            };
         };
 
         const renderEachLine = (scaler, eachItem) => {
@@ -135,7 +134,7 @@ export default class BasicTabulationChartView {
                 .style('stroke', config.color)
                 .style('fill', 'none')
                 .attr('d', draw(d3.path()).toString());
-        }
+        };
 
         const itemsDataLeft = this.#chartDataModel.selectedItemsDataLeft();
         itemsDataLeft.forEach(item => this.#currentItemsData.push(item));
@@ -144,12 +143,19 @@ export default class BasicTabulationChartView {
             const { min, max } = getMinMax(itemsDataLeft);
             const yLeft = d3.scaleLinear()
                 .domain([ max + 1, Math.max(min - 1, 0)])
-                .range([ MARGIN.top, height - MARGIN.bottom ])
+                .range([ MARGIN.top, height - MARGIN.bottom ]);
 
             svg.append('g')
                 .attr('class', CLASS_REMOVE_BEFORE_RENDER_LINES)
                 .attr('transform', `translate(${MARGIN.left} ,0)`)
                 .call(d3.axisLeft(yLeft));
+
+            svg.append('g')
+                .attr('class', CLASS_REMOVE_BEFORE_RENDER_LINES)
+                .attr('transform', 'translate(6 ,18)')
+                .append('text')
+                .attr('font-size', '12')
+                .text('(万人)');
 
             itemsDataLeft.forEach(each => renderEachLine(yLeft, each));
         }
@@ -160,12 +166,19 @@ export default class BasicTabulationChartView {
             const { min, max }  = getMinMax(itemsDataRight);
             const yRight = d3.scaleLinear()
                 .domain([ max + 1, Math.max(min - 1, 0)])
-                .range([ MARGIN.top, height - MARGIN.bottom ])
+                .range([ MARGIN.top, height - MARGIN.bottom ]);
 
             svg.append('g')
                 .attr('class', CLASS_REMOVE_BEFORE_RENDER_LINES)
                 .attr('transform', `translate(${width - MARGIN.right} ,0)`)
                 .call(d3.axisRight(yRight));
+
+            svg.append('g')
+                .attr('class', CLASS_REMOVE_BEFORE_RENDER_LINES)
+                .attr('transform', `translate(${width - MARGIN.right} ,18)`)
+                .append('text')
+                .attr('font-size', '12')
+                .text('(%)');
 
             itemsDataRight.forEach(each => renderEachLine(yRight, each));
         }
@@ -181,7 +194,7 @@ export default class BasicTabulationChartView {
             .attr('pointer-events', 'all')
             .attr('stroke', 'black')
             .on('mousemove', event => this.#showTooltip(event))
-            .on('mouseout', event => {
+            .on('mouseout', () => {
                 if (this.#$tooltip) {
                     this.#$tooltip.style.display = 'none';
                 }
@@ -193,7 +206,7 @@ export default class BasicTabulationChartView {
         const yearMonths = this.#yearMonths;
         const xCoord = d3.pointer(event)[0];
         const xCoordinates = yearMonths.map((d, i) => this.#chartX(i));
-        const nearestDataIndex = this.#nearestDataIndexSearcher(xCoordinates, xCoord);
+        const nearestDataIndex = this.#nearestDataIndexSearcherLeft(xCoordinates, xCoord);
 
         const yearMonth = yearMonths[nearestDataIndex];
         if (!yearMonth) {
@@ -201,6 +214,7 @@ export default class BasicTabulationChartView {
         }
 
         const height = this.#chartSizeModel.height();
+        const width = this.#chartSizeModel.width();
         const dataIndex = this.#chartDataModel.dataIndex(yearMonth.year, yearMonth.month);
         const itemsSorted = this.#currentItemsData.sort(
             (a, b) => a.config().index - b.config().index
@@ -227,15 +241,20 @@ export default class BasicTabulationChartView {
 
         } else {
 
-            this.#$tooltip.querySelector('#mainChartTooltipYearMonth').textContent = `${yearMonth.year}年${yearMonth.month}月`;
+            const $yearMonth = this.#$tooltip.querySelector('#mainChartTooltipYearMonth');
+            $yearMonth.textContent = `${yearMonth.year}年${yearMonth.month}月`;
             items.forEach(item => {
-                this.#$tooltip.querySelector(`#mainChartTooltipValue_${item.id}`).textContent = item.value;
+                const $value = this.#$tooltip.querySelector(`#mainChartTooltipValue_${item.id}`);
+                $value.textContent = item.value;
             });
         }
-
+        let left = xCoord + 12;
+        if (width / 2 < xCoord) {
+            left = xCoord - this.#$tooltip.clientWidth - 12;
+        }
         this.#$tooltip.style.display = 'block';
         this.#$tooltip.style.top = `${height / 2 - 20}px`;
-        this.#$tooltip.style.left = `${xCoord + 12}px`;
+        this.#$tooltip.style.left = `${left}px`;
     }
 
 

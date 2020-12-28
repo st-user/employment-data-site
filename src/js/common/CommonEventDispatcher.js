@@ -1,5 +1,3 @@
-import CustomEventNames from './CustomEventNames.js';
-
 const CommonEventDispatcher = (() => {
 
     const $mainOvserver = document.createElement('div');

@@ -24,7 +24,7 @@ export default class ChartSizeModel {
     }
 
     #setInternal(width) {
-        this.#width = width * 0.95;
+        this.#width = width * 0.98;
         this.#height = this.#width * 9 / 16;
     }
 }

@@ -68,7 +68,7 @@ export default class YearMonthModel {
     }
 
     equalTo(year, month) {
-        return year === this.#year && month === this.#month
+        return year === this.#year && month === this.#month;
     }
 
     isInRange(year, month) {

@@ -54,7 +54,7 @@ const BasicTabulationItemConfig = {
         isDefault: true
     }
 
-}
+};
 for (const [key, value] of Object.entries(BasicTabulationItemConfig)) {
     value['_key'] = key;
 }

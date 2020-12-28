@@ -1,6 +1,6 @@
-import { CustomEventNames, CustomEventContextNames } from '../common/CustomEventNames.js';
-import CommonEventDispatcher from '../common/CommonEventDispatcher.js';
+import { CustomEventNames } from '../common/CustomEventNames.js';
 import BasicTabulationChartView from './BasicTabulationChartView.js';
+import CommonEventDispatcher from '../common/CommonEventDispatcher.js';
 import ItemSelectionView from './ItemSelectionView.js';
 
 export default class BasicTabulationView {

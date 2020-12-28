@@ -8,7 +8,8 @@ const SITE_ROOT = packageInfo.siteRoot;
 
 module.exports = {
   entry: {
-    main: './src/index.js'
+    main: './src/index.js',
+    style: './src/style.js'
   },
   output: {
     filename: `./${SITE_ROOT}/js/[name].js`,

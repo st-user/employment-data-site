@@ -1,5 +1,5 @@
-import BasicTabulationItemConfig from './BasicTabulationItemConfig.js';
 import { CustomEventNames } from '../common/CustomEventNames.js';
+import BasicTabulationItemConfig from './BasicTabulationItemConfig.js';
 import CommonEventDispatcher from '../common/CommonEventDispatcher.js';
 
 class EachItemData {
@@ -53,12 +53,12 @@ export default class ChartDataModel {
     }
 
     load() {
-        return fetch(`./data/basic-tabulation-0.csv`)
+        return fetch(`./data/basic-tabulation-0.csv?q=${window.APP_VERSION}`)
             .then(response => response.text())
             .then(responseText => responseText.split(/\r?\n/).map(row => row.split(',')))
             .then(_csvRows => {
 
-                const csvRows = []
+                const csvRows = [];
                 for (let rowIndex = 0; rowIndex < _csvRows.length; rowIndex++) {
                     if (rowIndex < CSV_DATA_START_ROW_INDEX) {
                         continue;
@@ -72,11 +72,10 @@ export default class ChartDataModel {
                     }
                     csvRows.push(row);
                 }
-                console.log(csvRows);
 
                 csvRows.forEach((line, rowIndex) => {
-                    for (const [_key, holder] of this.#chartData) {
-                      holder.chooseData(line, rowIndex);
+                    for (const holder of this.#chartData.values()) {
+                        holder.chooseData(line, rowIndex);
                     }
                     this.#yearMonthIndexMapping.set(
                         this.#toYearMonthStringKey(line[CSV_YEAR_COLUMN_INDEX], line[CSV_MONTH_COLUMN_INDEX]),

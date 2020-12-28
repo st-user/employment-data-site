@@ -1,0 +1,13 @@
+@import 'global';
+
+
+.explanations {
+    list-style: disc;
+    margin: auto;
+    max-width: 650px;
+
+    &__item {
+        @extend %g__font-small;
+        line-height: 1.5;
+    }
+}

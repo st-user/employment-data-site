@@ -8,7 +8,7 @@ export default class YearMonthRangeChecker {
             if (this.#endYearMonth <= yearMonth) {
                 return false;
             }
-            this.#startYearMonth = yearMonth
+            this.#startYearMonth = yearMonth;
             return true;
         };
     }
@@ -18,7 +18,7 @@ export default class YearMonthRangeChecker {
             if (yearMonth <= this.#startYearMonth) {
                 return false;
             }
-            this.#endYearMonth = yearMonth
+            this.#endYearMonth = yearMonth;
             return true;
         };
     }

@@ -65,7 +65,12 @@ export default class YearMonthSelectionView {
     }
 
     setUpEvent() {
-        this.#$input.addEventListener('focus', () => this.#show());
+        this.#$input.addEventListener('focus', () => {
+            this.#show();
+            CommonEventDispatcher.dispatch(CustomEventNames.EMPLOYMENT_DATA_SITE__FOCUS_YEAR_MONTH_SELECTION, {
+                self: this
+            });
+        });
         window.addEventListener('click', () => this.#hide());
         this.#$main.addEventListener('click', event => event.stopPropagation());
 
@@ -100,6 +105,12 @@ export default class YearMonthSelectionView {
         this.#on(CustomEventNames.EMPLOYMENT_DATA_SITE__CHANGE_YEAR_MONTH_LIMIT, () => {
             this.#$wrapper = undefined;
         });
+
+        CommonEventDispatcher.on(CustomEventNames.EMPLOYMENT_DATA_SITE__FOCUS_YEAR_MONTH_SELECTION, event => {
+            if (this !== event.detail.self) {
+                this.#hide();
+            }
+        });
     }
 
     #show() {
@@ -115,19 +126,26 @@ export default class YearMonthSelectionView {
 
             $allYearRows.forEach($yearRow => {
 
-                $yearRow.addEventListener('click', () => {
+                const $yearRowText = $yearRow.querySelector('.year-month-selection__year-row-text');
+                const $calendarRow = $yearRow.querySelector('.year-month-selection__year-row-calendar');
+
+                $yearRowText.addEventListener('click', () => {
 
                     $allYearRows.forEach(_$yearRow => {
                         const year = parseInt(_$yearRow.dataset.year);
-                        const $caldendarRow = _$yearRow.querySelector('.year-month-selection__year-row-calendar');
+                        const _$calendarRow = _$yearRow.querySelector('.year-month-selection__year-row-calendar');
                         if (year === this.#openedYear) {
-                            this.#$calendar = $caldendarRow.removeChild(this.#$calendar);
-                            $caldendarRow.style.display = 'none';
+                            this.#$calendar = _$calendarRow.removeChild(this.#$calendar);
+                            _$calendarRow.style.display = 'none';
                         }
                     });
 
+                    $calendarRow.classList.add('is-animated');
                     this.#showCalendarRow($yearRow);
+                });
 
+                $calendarRow.addEventListener('animationend', () => {
+                    $calendarRow.classList.remove('is-animated');
                 });
             });
         }
@@ -139,7 +157,8 @@ export default class YearMonthSelectionView {
                 this.#showCalendarRow($yearRow);
                 if (1 < i) {
                     const $scrollWrapper = this.#$wrapper.querySelector('.year-month-selection__window');
-                    $scrollWrapper.scrollTop = (i - 1) * (YEAR_ROW_HEIGHT + YEAR_ROW_MARGIN) + YEAR_ROWS_TOP_MARGIN;
+                    const scrollTop = (i - 1) * (YEAR_ROW_HEIGHT + YEAR_ROW_MARGIN) + YEAR_ROWS_TOP_MARGIN;
+                    $scrollWrapper.scrollTop = scrollTop;
                 }
             }
         });
@@ -147,11 +166,11 @@ export default class YearMonthSelectionView {
 
     #showCalendarRow($yearRow) {
         const year = parseInt($yearRow.dataset.year);
-        const $caldendarRow = $yearRow.querySelector('.year-month-selection__year-row-calendar');
+        const $calendarRow = $yearRow.querySelector('.year-month-selection__year-row-calendar');
 
         this.#openedYear = year;
-        $caldendarRow.appendChild(this.#$calendar);
-        $caldendarRow.style.display = 'block';
+        $calendarRow.appendChild(this.#$calendar);
+        $calendarRow.style.display = 'block';
 
         this.#$calendar.querySelectorAll('.year-month-selection__calendar-each-month').forEach($month => {
             const month = parseInt($month.dataset.month);

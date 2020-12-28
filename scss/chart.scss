@@ -1,0 +1,76 @@
+@import 'global';
+
+.chart {
+    margin: auto;
+    max-width: 98%;
+    min-width: 340px;
+
+    &__title {
+        @extend %g__margin-bottom;
+    }
+
+    &__source {
+        @extend %g__font-small;
+        @extend %g__margin-bottom;
+    }
+
+    &__target-period {
+        @extend %g__margin-bottom;
+    }
+
+    %__target-period-row {
+        height: 24px;
+        line-height: 24px;
+    }
+
+    &__target-period-title {
+        @extend %__target-period-row;
+        float: left;
+    }
+
+    &__target-period-year-month {
+        @extend %__target-period-row;
+        float: left;
+    }
+
+    &__target-period-to {
+        @extend %__target-period-row;
+        float: left;
+        font-size: 24px;
+        text-align: center;
+        width: 32px;
+    }
+
+    &__item-selection {
+        margin-bottom: 6px;
+    }
+
+    &__item-selection-each-item {
+        @extend %g__font-small;
+        float: left;
+    }
+
+    &__item-selection-each-item-row {
+        display: inline-block;
+    }
+
+    &__item-selection-each-item-desc {
+        display: inline-block;
+        width: 100px;
+    }
+
+    &__contents {
+        position: relative;
+    }
+
+    &__contents-tooltip {
+        @extend %g__border-normal;
+        @extend %g__font-small;
+        @extend %g__shadow;
+        background-color: #fff;
+        border-radius: 3px;
+        opacity: 0.8px;
+        padding: 6px;
+        position: absolute;
+    }
+}
