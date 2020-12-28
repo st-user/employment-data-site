@@ -13,8 +13,6 @@ export default class BasicTabulationView {
     #itemSelectionView;
     #chartView;
 
-    #isInitializing;
-
     constructor(startYearMonthModel, endYearMonthModel, chartDataModel, chartSizeModel) {
         this.#startYearMonthModel = startYearMonthModel;
         this.#endYearMonthModel = endYearMonthModel;
@@ -62,7 +60,7 @@ export default class BasicTabulationView {
     }
 
     load() {
-        this.#isInitializing = true;
+
         this.#chartDataModel.load().then(yearMonthInfo => {
 
             this.#startYearMonthModel.setLimit(

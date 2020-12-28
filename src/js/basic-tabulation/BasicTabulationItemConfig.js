@@ -33,7 +33,7 @@ const BasicTabulationItemConfig = {
         isAxisLeft: true,
         description: '完全失業者',
         color: '#3DCCBB',
-        isDefault: false
+        isDefault: true
     },
 
     NOT_IN_LABOUR_FORCE: {

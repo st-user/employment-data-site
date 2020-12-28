@@ -153,6 +153,9 @@ export default class YearMonthSelectionView {
 
         this.#$wrapper.querySelectorAll('.year-month-selection__year-row').forEach(($yearRow, i) => {
             const year = parseInt($yearRow.dataset.year);
+            const $calendarRow = $yearRow.querySelector('.year-month-selection__year-row-calendar');
+            $calendarRow.style.display = 'none';
+
             if (this.#yearMonthModel.year() === year) {
                 this.#showCalendarRow($yearRow);
                 if (1 < i) {
